@@ -327,6 +327,17 @@
 			gap:8px;
 			font-size:0.95rem;
 			border:2px solid rgba(0,0,0,0.25);
+			cursor: pointer;
+			transition: box-shadow 0.2s ease, border-color 0.2s ease;
+		}
+		.price-badge:hover {
+			box-shadow: 0 12px 34px rgba(123,97,255,0.20);
+			border-color: rgba(255,255,255,0.28);
+		}
+		.price-badge:focus-visible {
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(62,197,255,0.55), 0 12px 34px rgba(123,97,255,0.20);
+			border-color: rgba(62,197,255,0.55);
 		}
 		.price-badge .vb-icon {
 			width:22px;height:22px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;background:rgba(255,255,255,0.12);
@@ -683,7 +694,7 @@
 				rarity: 'Legendary',
 				rarityClass: 'rarity-legendary',
 				price: 1200,
-				image: 'https://fortnite-api.com/images/cosmetics/br/CID_028_Athena_Commando_M_RebirthDefaultA/icon.png',
+				image: 'https://static.wikia.nocookie.net/fortnite/images/f/fc/Peely_%28v30.00%29_-_Outfit_-_Fortnite.png/revision/latest/scale-to-width/360?cb=20240524202045',
 				section: 'daily',
 				new: true
 			},
@@ -693,7 +704,7 @@
 				rarity: 'Legendary',
 				rarityClass: 'rarity-legendary',
 				price: 1200,
-				image: 'https://fortnite-api.com/images/cosmetics/br/CID_017_Athena_Commando_F_RebirthDefaultA/icon.png',
+				image: 'https://static.wikia.nocookie.net/fortnite_gamepedia/images/e/ea/New_Cuddle_Team_Leader.png/revision/latest?cb=20190814133732',
 				section: 'daily'
 			},
 			{
@@ -702,7 +713,7 @@
 				rarity: 'Epic',
 				rarityClass: 'rarity-epic',
 				price: 800,
-				image: 'https://fortnite-api.com/images/cosmetics/br/CID_047_Athena_Commando_F_Assassin/icon.png',
+				image: 'https://static.wikia.nocookie.net/fortnite_gamepedia/images/5/52/BattleRoyaleSkin65.png/revision/latest?cb=20180314164525',
 				section: 'daily',
 				new: true
 			},
@@ -712,44 +723,44 @@
 				rarity: 'Rare',
 				rarityClass: 'rarity-rare',
 				price: 600,
-				image: 'https://fortnite-api.com/images/cosmetics/br/CID_001_Athena_Commando_M_Default/icon.png',
+				image: 'https://media.fortniteapi.io/images/5faac16-a689b3b-7e27a23-1279057/transparent.png',
 				section: 'daily'
 			},
 			{
 				id: 5,
-				name: 'Victory Royale',
+				name: 'Sign Spinner',
 				rarity: 'Rare',
 				rarityClass: 'rarity-rare',
 				price: 500,
-				image: 'https://fortnite-api.com/images/cosmetics/br/EID_VictoryLaps/icon.png',
+				image: 'https://static.wikia.nocookie.net/fortnite/images/e/e7/Sign_Spinner_-_Emote_-_Fortnite.png/revision/latest?cb=20190509155051',
 				section: 'limited'
 			},
 			{
 				id: 6,
-				name: 'Starfire Glider',
+				name: 'Diamond Pony',
 				rarity: 'Epic',
 				rarityClass: 'rarity-epic',
 				price: 500,
-				image: 'https://fortnite-api.com/images/cosmetics/br/Glider_ID_015_DarkWing/icon.png',
+				image: 'https://static.wikia.nocookie.net/fortnite/images/3/35/Diamond_Pony_%28Featured%29_-_Glider_-_Fortnite.png/revision/latest?cb=20250106174620',
 				section: 'limited',
 				new: true
 			},
 			{
 				id: 7,
-				name: 'Pickaxe of Destiny',
+				name: 'The Lament',
 				rarity: 'Uncommon',
 				rarityClass: 'rarity-uncommon',
 				price: 800,
-				image: 'https://fortnite-api.com/images/cosmetics/br/Pickaxe_ID_008_Scythe/icon.png',
+				image: 'https://static.wikia.nocookie.net/fortnite/images/8/8a/The_Lament_%28Featured%29_-_Pickaxe_-_Fortnite.png/revision/latest?cb=20220823223238',
 				section: 'limited'
 			},
 			{
 				id: 8,
-				name: 'Brutus Backbling',
+				name: 'Hench Hauler',
 				rarity: 'Legendary',
 				rarityClass: 'rarity-legendary',
 				price: 400,
-				image: 'https://fortnite-api.com/images/cosmetics/br/BID_015_BrutusBackPack/icon.png',
+				image: 'https://static.wikia.nocookie.net/fortnite_gamepedia/images/9/98/Hench_Hauler.png/revision/latest?cb=20200228114007',
 				section: 'limited'
 			}
 		];
@@ -822,13 +833,24 @@
 					<div class="item-rarity ${item.rarityClass}">${item.rarity}</div>
 					<div class="item-footer">
 						<div class="item-price" style="visibility:hidden">${item.price}</div>
-						<button class="purchase-btn" onclick="event.stopPropagation(); handlePurchaseClick(${item.id})">Buy</button>
-						<div class="price-badge"><div class="vb-icon">V</div><div>${item.price}</div></div>
+						<div class="price-badge" role="button" tabindex="0" aria-label="Buy ${item.name} for ${item.price} V-Bucks"><div class="vb-icon">V</div><div>${item.price}</div></div>
 					</div>
 				</div>
 			`;
 			// clicking the card selects it
 			card.addEventListener('click', () => selectItem(item.id));
+			// make the price badge act as the buy button
+			const priceBadge = card.querySelector('.price-badge');
+			if (priceBadge) {
+				priceBadge.addEventListener('click', (event) => { event.stopPropagation(); handlePurchaseClick(item.id); });
+				priceBadge.addEventListener('keydown', (event) => {
+					if (event.key === 'Enter' || event.key === ' ') {
+						event.preventDefault();
+						event.stopPropagation();
+						handlePurchaseClick(item.id);
+					}
+				});
+			}
 			return card;
 		}
 
