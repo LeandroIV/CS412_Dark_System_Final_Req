@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Fortnite Shop - Dark Pattern vs Ethical Design</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<!-- Add Fortnite-like display font and reset -->
+	<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+	<style>
+		:root{
+			/* Fortnite-inspired palette */
+			--bg-1: #0b1226;
+			--bg-2: #161733;
+			--accent-purple: #7b61ff;
+			--accent-pink: #ff5ab6;
+			--accent-blue: #3ec5ff;
+			--vbuck-bg: linear-gradient(135deg,var(--accent-purple),var(--accent-blue));
+			--card-bg: linear-gradient(135deg, rgba(15,15,30,0.95), rgba(30,30,60,0.6));
+			--text-muted: rgba(255,255,255,0.8);
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			background: radial-gradient(1200px 600px at 10% 20%, rgba(123,97,255,0.12), transparent),
+						radial-gradient(900px 500px at 90% 80%, rgba(62,197,255,0.08), transparent),
+						linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 60%, #071028 100%);
+			font-family: 'Montserrat', Arial, sans-serif;
+			color: #fff;
+			user-select: none;
+			-webkit-user-select: none;
+			overflow-x: hidden;
+		}
+
+		/* Top navigation like screenshot */
+		.top-nav {
+			width: 100%;
+			background: linear-gradient(180deg, #041233 0%, #08214D 100%);
+			padding: 0.35rem 0;
+			border-bottom: 4px solid rgba(255,255,255,0.02);
+			box-shadow: 0 6px 20px rgba(2,8,30,0.6);
+		}
+		.top-nav .nav-inner {
+			max-width: 1400px;
+			margin: 0 auto;
+			display:flex;
+			align-items:center;
+			justify-content:space-between;
+			gap:1rem;
+			padding:0 1.5rem;
+		}
+		.nav-tabs {
+			display:flex;
+			align-items:center;
+			gap:0.6rem;
+			margin-left: 1rem;
+		}
+		.nav-tab {
+			padding:0.45rem 0.9rem;
+			color:#cfe8ff;
+			font-weight:800;
+			font-size:0.85rem;
+			background:transparent;
+			border-radius:4px;
+			letter-spacing:0.6px;
+			cursor:pointer;
+		}
+		.nav-tab.active {
+			background: linear-gradient(90deg,#0f6bff,#7b61ff);
+			color:#fff;
+			box-shadow:0 6px 18px rgba(123,97,255,0.14);
+		}
+
+		/* move vbucks to the right corner like screenshot */
+		.vbucks-container {
+			min-width: auto;
+			padding:0.3rem 0.7rem;
+			gap:0.5rem;
+			border-radius:6px;
+			font-size:0.95rem;
+		}
+		.vbucks-icon {
+			width:28px; height:28px; border-radius:6px;
+			background: linear-gradient(90deg,var(--accent-blue),var(--accent-purple));
+			display:inline-flex; align-items:center; justify-content:center; font-weight:900; margin-right:6px; box-shadow:0 8px 18px rgba(123,97,255,0.12);
+		}
+
+		/* Section header with title left and timer right */
+		.section-header {
+			display:flex;
+			justify-content:space-between;
+			align-items:center;
+			margin-bottom:1rem;
+			gap:1rem;
+		}
+		.section-title {
+			font-size:1.6rem;
+			font-weight:900;
+			color:#cfe8ff;
+			letter-spacing:0.6px;
+		}
+		.section-timer {
+			font-size:0.95rem;
+			color: rgba(255,255,255,0.7);
+			background: rgba(255,255,255,0.03);
+			padding:0.35rem 0.9rem;
+			border-radius:6px;
+			font-weight:700;
+		}
+
+		/* Mode toggle - subtle translucent pill */
+		.mode-toggle-container {
+			display: flex;
+			align-items: center;
+			gap: 0.8rem;
+			background: rgba(255,255,255,0.04);
+			padding: 0.5rem 0.9rem;
+			border-radius: 999px;
+			border: 1px solid rgba(255,255,255,0.04);
+			font-family: 'Montserrat', sans-serif;
+		}
+
+		.mode-label {
+			font-size: 0.82rem;
+			font-weight: 700;
+			color: var(--text-muted);
+		}
+
+		.mode-label.dark { color: var(--accent-pink); }
+		.mode-label.ethical { color: var(--accent-blue); }
+
+		/* Toggle switch */
+		.toggle-switch {
+			position: relative;
+			width: 56px;
+			height: 28px;
+			background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.06));
+			border-radius: 999px;
+			cursor: pointer;
+			transition: all 0.25s ease;
+			box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+		}
+
+		.toggle-switch.active {
+			background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+			box-shadow: 0 6px 18px rgba(123,97,255,0.14);
+		}
+
+		.toggle-slider {
+			position: absolute;
+			top: 3px;
+			left: 3px;
+			width: 22px;
+			height: 22px;
+			background: #fff;
+			border-radius: 50%;
+			transition: left 0.25s ease, transform 0.12s ease;
+			box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+		}
+
+		.toggle-switch.active .toggle-slider {
+			left: 31px;
+			transform: translateX(-2px);
+		}
+
+		/* Mode banner */
+		.mode-banner {
+			padding: 0.9rem 1rem;
+			text-align: center;
+			font-weight: 900;
+			font-size: 1rem;
+			border-bottom: 3px solid transparent;
+			letter-spacing: 0.8px;
+		}
+
+		.mode-banner.dark {
+			background: linear-gradient(90deg, rgba(255,90,182,0.06), rgba(123,97,255,0.04));
+			border-color: rgba(123,97,255,0.18);
+			color: #ffd8ff;
+		}
+
+		.mode-banner.ethical {
+			background: linear-gradient(90deg, rgba(62,197,255,0.06), rgba(123,97,255,0.03));
+			border-color: rgba(62,197,255,0.18);
+			color: #cdeeff;
+		}
+
+		/* Main container */
+		.main-container {
+			max-width: 1400px;
+			margin: 2rem auto;
+			padding: 0 2rem;
+		}
+
+		/* Section title */
+		.section-title {
+			font-size: 2rem;
+			font-weight: 900;
+			margin-bottom: 2rem;
+			color: #FFD700;
+			text-shadow: 2px 2px 0px rgba(255, 23, 68, 0.5);
+			letter-spacing: 1px;
+		}
+
+		/* Shop grid */
+		.shop-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+			gap: 2rem;
+		}
+
+		/* Item card */
+		.item-card {
+			background: var(--card-bg);
+			border: 2px solid rgba(255,255,255,0.03);
+			border-radius: 12px;
+			overflow: hidden;
+			transition: transform 0.28s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s ease, border-color 0.28s ease;
+			cursor: pointer;
+			position: relative;
+			box-shadow: 0 8px 40px rgba(3,6,20,0.6);
+		}
+
+		.item-card:hover {
+			transform: translateY(-10px) scale(1.02);
+			box-shadow: 0 18px 60px rgba(123,97,255,0.12);
+			border-color: rgba(123,97,255,0.32);
+		}
+
+		.item-card.new::before {
+			content: 'NEW';
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			background: linear-gradient(90deg,var(--accent-pink),var(--accent-purple));
+			color: white;
+			padding: 6px 12px;
+			border-radius: 999px;
+			font-weight: 900;
+			font-size: 0.75rem;
+			z-index: 10;
+			text-shadow: 0 2px 8px rgba(0,0,0,0.55);
+		}
+
+		.item-image {
+			width: 100%;
+			height: 220px;
+			background: linear-gradient(180deg, rgba(20,20,40,0.6), rgba(30,30,60,0.2));
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+			border-bottom: 1px solid rgba(255,255,255,0.03);
+		}
+
+		.item-image img { max-width: 86%; max-height: 86%; object-fit: contain; filter: drop-shadow(0 8px 20px rgba(123,97,255,0.16)); }
+
+		.item-info {
+			padding: 1.5rem;
+		}
+
+		.item-name {
+			font-size: 1.15rem;
+			font-weight: 900;
+			color: #fff;
+			margin-bottom: 0.25rem;
+		}
+
+		.item-rarity {
+			font-size: 0.85rem;
+			margin-bottom: 0.9rem;
+			font-weight: 800;
+			letter-spacing: 0.8px;
+			color: var(--text-muted);
+		}
+
+		.rarity-legendary { color: #FF8C00; }
+		.rarity-epic { color: #A335EE; }
+		.rarity-rare { color: #0099FF; }
+		.rarity-uncommon { color: #66FF99; }
+
+		.item-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-top: 0.6rem;
+			padding-top: 0.8rem;
+			border-top: 1px solid rgba(255,255,255,0.02);
+		}
+
+		.item-price {
+			font-size: 1.05rem;
+			font-weight: 900;
+			color: #fff;
+			display:flex;
+			align-items:center;
+			gap:0.5rem;
+		}
+		.item-price::before {
+			content: 'V';
+			width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center;
+			border-radius:50%;
+			background: linear-gradient(90deg,var(--accent-blue),var(--accent-purple));
+			color:#fff; font-weight:900; box-shadow: 0 6px 16px rgba(123,97,255,0.12);
+			font-size:0.9rem;
+		}
+
+		/* price badge centered bottom like screenshot */
+		.item-footer { position:relative; padding-top:1rem; }
+		.price-badge {
+			position:absolute;
+			left:50%; transform:translateX(-50%);
+			bottom:-18px;
+			background: linear-gradient(90deg,var(--accent-blue),var(--accent-purple));
+			color:#fff;
+			padding:6px 12px;
+			border-radius:6px;
+			font-weight:900;
+			box-shadow:0 10px 28px rgba(123,97,255,0.14);
+			display:flex;
+			align-items:center;
+			gap:8px;
+			font-size:0.95rem;
+			border:2px solid rgba(0,0,0,0.25);
+		}
+		.price-badge .vb-icon {
+			width:22px;height:22px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-weight:900;background:rgba(255,255,255,0.12);
+		}
+
+		/* ensure layout reserve for badge */
+		.item-card { padding-bottom: 28px; }
+
+		/* small tweaks */
+		.mode-label { font-weight:800; }
+		.mode-label.dark, .mode-label.ethical { display:inline-block; }
+
+		/* Modal overlay & content - purple themed */
+		.modal-overlay {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.85);
+			backdrop-filter: blur(4px);
+			z-index: 1000;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.modal-overlay.active {
+			display: flex;
+		}
+
+		.modal-content {
+			background: linear-gradient(180deg, rgba(8,7,20,0.98), rgba(18,16,42,0.98));
+			border: 3px solid rgba(123,97,255,0.18);
+			border-radius: 14px;
+			padding: 1.75rem;
+			max-width: 520px;
+			width: 92%;
+			box-shadow: 0 30px 80px rgba(2,4,18,0.8);
+			animation: slideUp 0.3s ease;
+		}
+
+		@keyframes slideUp {
+			from {
+				transform: translateY(50px);
+				opacity: 0;
+			}
+			to {
+				transform: translateY(0);
+				opacity: 1;
+			}
+		}
+
+		.modal-header {
+			text-align: center;
+			margin-bottom: 2rem;
+		}
+
+		.modal-title {
+			font-family: 'Bungee', sans-serif;
+			font-size: 1.6rem;
+			color: #fff;
+			margin-bottom: 0.5rem;
+			letter-spacing: 1px;
+		}
+
+		.modal-item-display {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 1.5rem;
+			margin-bottom: 2rem;
+			padding: 1.5rem;
+			background: rgba(0, 0, 0, 0.3);
+			border-radius: 8px;
+			border: 1px dashed rgba(123,97,255,0.12);
+		}
+
+		.modal-item-image {
+			width: 80px;
+			height: 80px;
+			background: linear-gradient(135deg, #1a1a40 0%, #2a2a60 100%);
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+		}
+
+		.modal-item-image img {
+			max-width: 90%;
+			max-height: 90%;
+			object-fit: contain;
+		}
+
+		.modal-item-info {
+			flex: 1;
+		}
+
+		.modal-item-name {
+			font-size: 1.3rem;
+			font-weight: 900;
+			color: #FFD700;
+			margin-bottom: 0.3rem;
+		}
+
+		.modal-item-rarity {
+			font-size: 0.85rem;
+			text-transform: uppercase;
+			font-weight: bold;
+			letter-spacing: 0.5px;
+		}
+
+		.modal-price-section {
+			background: linear-gradient(90deg, rgba(123,97,255,0.04), rgba(62,197,255,0.02));
+			border: 1px solid rgba(123,97,255,0.08);
+			padding: 1.5rem;
+			border-radius: 8px;
+			margin-bottom: 1.5rem;
+		}
+
+		.price-row {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 1rem;
+			font-size: 1.1rem;
+			font-weight: bold;
+		}
+
+		.price-row:last-child {
+			margin-bottom: 0;
+			padding-top: 1rem;
+			border-top: 2px solid rgba(255, 215, 0, 0.3);
+			color: #00E676;
+			font-size: 1.3rem;
+		}
+
+		/* Hold button & progress using CSS var --progress */
+		.hold-button {
+			width:100%; padding:1.05rem; background: linear-gradient(90deg,var(--accent-purple),var(--accent-pink));
+			color:#fff; border:none; border-radius:10px; font-weight:900; font-size:1rem; cursor:pointer;
+			position:relative; overflow:hidden; margin-bottom:0.9rem; letter-spacing:1px;
+			box-shadow: 0 14px 40px rgba(123,97,255,0.12);
+		}
+
+		.hold-button::before{
+			content:'';
+			position:absolute;
+			top:0; left:0; height:100%;
+			width: var(--progress, 0%);
+			background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+			transition: width 0.06s linear;
+			z-index:0;
+		}
+
+		.hold-button span{ position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:0.6rem; }
+
+		.cancel-btn {
+			width: 100%;
+			padding: 0.75rem;
+			background: rgba(255, 23, 68, 0.2);
+			color: #FF6E6E;
+			border: 2px solid #FF1744;
+			border-radius: 6px;
+			font-weight: bold;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.cancel-btn:hover {
+			background: rgba(255, 23, 68, 0.3);
+			transform: scale(1.02);
+		}
+
+		/* Notification */
+		.notification {
+			position: fixed;
+			bottom: 2rem;
+			right: 2rem;
+			padding: 1.25rem 1.75rem;
+			border-radius: 8px;
+			font-weight: bold;
+			animation: slideInRight 0.3s ease;
+			z-index: 2000;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+			border-left: 4px solid;
+		}
+
+		@keyframes slideInRight {
+			from {
+				transform: translateX(400px);
+				opacity: 0;
+			}
+			to {
+				transform: translateX(0);
+				opacity: 1;
+			}
+		}
+
+		.notification.success {
+			background: linear-gradient(90deg,var(--accent-purple),var(--accent-blue)); color:#fff; border-left-color: rgba(255,255,255,0.06);
+		}
+
+		.notification.error {
+			background: linear-gradient(135deg, #FF1744 0%, #D32F2F 100%);
+			color: #fff;
+			border-left-color: #B71C1C;
+		}
+
+		.notification.info {
+			background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); color:#fff; border-left-color: var(--accent-purple);
+		}
+
+		/* Responsive */
+		@media (max-width: 768px) {
+			.header-content {
+				flex-direction: column;
+				gap: 1rem;
+			}
+
+			.shop-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.modal-content {
+				padding: 1.5rem;
+			}
+
+			.logo {
+				font-size: 1.8rem;
+			}
+		}
+	</style>
+</head>
+<body>
+	<!-- replace the header block with a top-nav matching screenshot -->
+	<div class="top-nav">
+		<div class="nav-inner">
+			<div style="display:flex;align-items:center;gap:1rem;">
+				<div class="logo" style="font-size:1.25rem;">FORTNITE</div>
+				<div class="nav-tabs" aria-hidden="true">
+					<div class="nav-tab">PLAY</div>
+					<div class="nav-tab">BATTLE PASS</div>
+					<div class="nav-tab">CHALLENGES</div>
+					<div class="nav-tab">COMPETE</div>
+					<div class="nav-tab">LOCKER</div>
+					<div class="nav-tab active">ITEM SHOP</div>
+					<div class="nav-tab">CAREER</div>
+					<div class="nav-tab">STORE</div>
+				</div>
+			</div>
+
+			<div style="display:flex;align-items:center;gap:1rem;">
+				<!-- existing mode toggle (kept) -->
+				<div class="mode-toggle-container" style="margin-right:8px;">
+					<span class="mode-label dark">Dark Pattern</span>
+					<div class="toggle-switch" id="mode-toggle">
+						<div class="toggle-slider"></div>
+					</div>
+					<span class="mode-label ethical">Ethical</span>
+				</div>
+
+				<!-- V-Bucks on right -->
+				<div class="v-bucks-container" title="V-Bucks">
+					<div class="v-bucks-icon">V</div>
+					<div style="display:flex;flex-direction:column;align-items:flex-start;">
+						<span style="font-size:0.7rem;opacity:0.9;">V-BUCKS</span>
+						<span class="v-bucks-amount" id="vbucks-amount">5000</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Mode Banner - reduce emoji usage -->
+	<div class="mode-banner dark" id="mode-banner">
+		INSTANT PURCHASE MODE — One-click buying enabled
+	</div>
+
+	<!-- Main Content -->
+	<div class="main-container">
+		<!-- Daily Items Section becomes Featured with timer on right -->
+		<div class="section-header">
+			<div class="section-title">FEATURED ITEMS</div>
+			<div class="section-timer" id="featured-timer">3:36:29</div>
+		</div>
+		<div class="shop-grid" id="daily-shop">
+		</div>
+
+		<!-- Special Items Section -->
+		<div style="margin-top:2.25rem;" class="section-header">
+			<div class="section-title">DAILY ITEMS</div>
+			<div class="section-timer" id="daily-timer">3:36:29</div>
+		</div>
+		<div class="shop-grid" id="limited-shop">
+		</div>
+	</div>
+
+	<!-- Confirmation Modal -->
+	<div class="modal-overlay" id="modal-overlay">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="modal-title">Confirm Purchase</div>
+			</div>
+
+			<div class="modal-item-display">
+				<div class="modal-item-image">
+					<img id="modal-item-image" src="" alt="Item">
+				</div>
+				<div class="modal-item-info">
+					<div class="modal-item-name" id="modal-item-name">Item</div>
+					<div class="modal-item-rarity" id="modal-item-rarity">Legendary</div>
+				</div>
+			</div>
+
+			<div class="modal-price-section">
+				<div class="price-row">
+					<span>Price:</span>
+					<span id="modal-item-price" style="color: #FFD700;">0</span>
+				</div>
+				<div class="price-row">
+					<span>Your Balance:</span>
+					<span id="modal-current-balance" style="color: #00E676;">5000</span>
+				</div>
+				<div class="price-row">
+					<span>After Purchase:</span>
+					<span id="modal-balance-after" style="color: #00E676;">5000</span>
+				</div>
+			</div>
+
+			<!-- Modal hold button (unchanged structure, keep IDs) -->
+			<button class="hold-button" id="hold-confirm-btn">
+				<span>
+					<span id="hold-text">Hold to Confirm</span>
+					<span id="hold-progress-text" style="display: none;">■■■■■</span>
+				</span>
+			</button>
+
+			<button class="cancel-btn" onclick="closeModal()">Cancel</button>
+		</div>
+	</div>
+
+	<!-- Notification Container -->
+	<div id="notification-container"></div>
+
+	<script>
+		// ==================== DATA ====================
+		const shopItems = [
+			{
+				id: 1,
+				name: 'Peely',
+				rarity: 'Legendary',
+				rarityClass: 'rarity-legendary',
+				price: 1200,
+				image: 'https://fortnite-api.com/images/cosmetics/br/CID_028_Athena_Commando_M_RebirthDefaultA/icon.png',
+				section: 'daily',
+				new: true
+			},
+			{
+				id: 2,
+				name: 'Cuddle Team Leader',
+				rarity: 'Legendary',
+				rarityClass: 'rarity-legendary',
+				price: 1200,
+				image: 'https://fortnite-api.com/images/cosmetics/br/CID_017_Athena_Commando_F_RebirthDefaultA/icon.png',
+				section: 'daily'
+			},
+			{
+				id: 3,
+				name: 'Ramirez Elite Agent',
+				rarity: 'Epic',
+				rarityClass: 'rarity-epic',
+				price: 800,
+				image: 'https://fortnite-api.com/images/cosmetics/br/CID_047_Athena_Commando_F_Assassin/icon.png',
+				section: 'daily',
+				new: true
+			},
+			{
+				id: 4,
+				name: 'Aerial Assault One',
+				rarity: 'Rare',
+				rarityClass: 'rarity-rare',
+				price: 600,
+				image: 'https://fortnite-api.com/images/cosmetics/br/CID_001_Athena_Commando_M_Default/icon.png',
+				section: 'daily'
+			},
+			{
+				id: 5,
+				name: 'Victory Royale',
+				rarity: 'Rare',
+				rarityClass: 'rarity-rare',
+				price: 500,
+				image: 'https://fortnite-api.com/images/cosmetics/br/EID_VictoryLaps/icon.png',
+				section: 'limited'
+			},
+			{
+				id: 6,
+				name: 'Starfire Glider',
+				rarity: 'Epic',
+				rarityClass: 'rarity-epic',
+				price: 500,
+				image: 'https://fortnite-api.com/images/cosmetics/br/Glider_ID_015_DarkWing/icon.png',
+				section: 'limited',
+				new: true
+			},
+			{
+				id: 7,
+				name: 'Pickaxe of Destiny',
+				rarity: 'Uncommon',
+				rarityClass: 'rarity-uncommon',
+				price: 800,
+				image: 'https://fortnite-api.com/images/cosmetics/br/Pickaxe_ID_008_Scythe/icon.png',
+				section: 'limited'
+			},
+			{
+				id: 8,
+				name: 'Brutus Backbling',
+				rarity: 'Legendary',
+				rarityClass: 'rarity-legendary',
+				price: 400,
+				image: 'https://fortnite-api.com/images/cosmetics/br/BID_015_BrutusBackPack/icon.png',
+				section: 'limited'
+			}
+		];
+
+		// ==================== STATE ====================
+		let vbucks = 5000;
+		let isDarkMode = true;
+		let pendingPurchase = null;
+		let isHolding = false;
+		let holdProgress = 0;
+		let holdInterval = null;
+
+		// ==================== DOM ELEMENTS ====================
+		const modeToggle = document.getElementById('mode-toggle');
+		const modeBanner = document.getElementById('mode-banner');
+		const vbucksDisplay = document.getElementById('vbucks-amount');
+		const dailyShop = document.getElementById('daily-shop');
+		const limitedShop = document.getElementById('limited-shop');
+		const modalOverlay = document.getElementById('modal-overlay');
+		const holdConfirmBtn = document.getElementById('hold-confirm-btn');
+
+		// ==================== INITIALIZATION ====================
+		function init() {
+			renderShop();
+			setupEventListeners();
+		}
+
+		function renderShop() {
+			dailyShop.innerHTML = '';
+			limitedShop.innerHTML = '';
+
+			shopItems.forEach(item => {
+				const card = createItemCard(item);
+				if (item.section === 'daily') {
+					dailyShop.appendChild(card);
+				} else {
+					limitedShop.appendChild(card);
+				}
+			});
+		}
+
+		// add select behavior so clicking a card highlights it (mimic screenshot selection)
+		function selectItem(itemId) {
+			// clear existing selection
+			document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
+			// find the clicked card and mark selected
+			const cards = Array.from(document.querySelectorAll('.item-card'));
+			const card = cards.find(c => c.getAttribute('data-item-id') === String(itemId));
+			if (card) {
+				card.classList.add('selected');
+				// if in dark mode, you may still want instant purchase by clicking buy only;
+				// optionally scroll into view
+				card.scrollIntoView({behavior:'smooth', block:'center'});
+			}
+		}
+
+		// update createItemCard to set data-item-id and avoid card click being swallowed by buy button
+		function createItemCard(item) {
+			const card = document.createElement('div');
+			// add featured class for first column items to approximate the screenshot
+			const isFeatured = item.section === 'daily' && (item.new || item.price >= 1000);
+			card.className = `item-card ${item.new ? 'new' : ''} ${isFeatured ? 'featured' : ''}`;
+			card.setAttribute('data-item-id', item.id);
+			card.innerHTML = `
+				<div class="item-image">
+					<img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/200?text=${item.name}'">
+				</div>
+				<div class="item-info">
+					<div class="item-name">${item.name}</div>
+					<div class="item-rarity ${item.rarityClass}">${item.rarity}</div>
+					<div class="item-footer">
+						<div class="item-price" style="visibility:hidden">${item.price}</div>
+						<button class="purchase-btn" onclick="event.stopPropagation(); handlePurchaseClick(${item.id})">Buy</button>
+						<div class="price-badge"><div class="vb-icon">V</div><div>${item.price}</div></div>
+					</div>
+				</div>
+			`;
+			// clicking the card selects it
+			card.addEventListener('click', () => selectItem(item.id));
+			return card;
+		}
+
+		function setupEventListeners() {
+			modeToggle.addEventListener('click', toggleMode);
+			holdConfirmBtn.addEventListener('mousedown', startHold);
+			holdConfirmBtn.addEventListener('mouseup', endHold);
+			holdConfirmBtn.addEventListener('mouseleave', endHold);
+			holdConfirmBtn.addEventListener('touchstart', startHold);
+			holdConfirmBtn.addEventListener('touchend', endHold);
+		}
+
+		// ==================== MODE TOGGLE ====================
+		function toggleMode() {
+			isDarkMode = !isDarkMode;
+			modeToggle.classList.toggle('active');
+			
+			if (isDarkMode) {
+				modeBanner.className = 'mode-banner dark';
+				modeBanner.innerHTML = '⚡ INSTANT PURCHASE MODE - One-click buying enabled (Dark Pattern)';
+			} else {
+				modeBanner.className = 'mode-banner ethical';
+				modeBanner.innerHTML = '✓ ETHICAL MODE - Confirmation & Hold-to-confirm protection enabled';
+			}
+		}
+
+		// ==================== PURCHASE HANDLING ====================
+		function handlePurchaseClick(itemId) {
+			const item = shopItems.find(i => i.id === itemId);
+			if (!item) return;
+
+			if (vbucks < item.price) {
+				showNotification('Not enough V-Bucks!', 'error');
+				return;
+			}
+
+			if (isDarkMode) {
+				// Dark Pattern: Instant purchase
+				completePurchase(item);
+			} else {
+				// Ethical Mode: Show confirmation modal
+				openModal(item);
+			}
+		}
+
+		function openModal(item) {
+			pendingPurchase = item;
+			const balanceAfter = vbucks - item.price;
+
+			document.getElementById('modal-item-image').src = item.image;
+			document.getElementById('modal-item-name').textContent = item.name;
+			document.getElementById('modal-item-rarity').textContent = item.rarity;
+			document.getElementById('modal-item-rarity').className = `modal-item-rarity ${item.rarityClass}`;
+			document.getElementById('modal-item-price').textContent = item.price;
+			document.getElementById('modal-current-balance').textContent = vbucks;
+			document.getElementById('modal-balance-after').textContent = balanceAfter;
+
+			holdProgress = 0;
+			updateHoldButton();
+
+			modalOverlay.classList.add('active');
+		}
+
+		function closeModal() {
+			modalOverlay.classList.remove('active');
+			pendingPurchase = null;
+			isHolding = false;
+			holdProgress = 0;
+			clearInterval(holdInterval);
+			updateHoldButton();
+		}
+
+		// ==================== HOLD-TO-CONFIRM LOGIC ====================
+		function startHold() {
+			if (!pendingPurchase || isHolding) return;
+			isHolding = true;
+			holdProgress = 0;
+
+			// ensure CSS var is reset
+			holdConfirmBtn.style.setProperty('--progress', '0%');
+
+			holdInterval = setInterval(() => {
+				holdProgress += 4; // consistent smooth increment
+				if (holdProgress >= 100) {
+					holdProgress = 100;
+					clearInterval(holdInterval);
+					// small timeout so progress visually reaches 100%
+					setTimeout(() => {
+						completePurchase(pendingPurchase);
+						closeModal();
+					}, 80);
+					updateHoldButton();
+					return;
+				}
+				updateHoldButton();
+			}, 16);
+		}
+
+		function endHold() {
+			if (!isHolding) return;
+			isHolding = false;
+			clearInterval(holdInterval);
+
+			if (holdProgress < 100) {
+				holdProgress = 0;
+				updateHoldButton();
+			}
+		}
+
+		function updateHoldButton() {
+			const width = Math.max(0, Math.min(100, holdProgress));
+			// set the CSS variable driving the ::before width
+			holdConfirmBtn.style.setProperty('--progress', `${width}%`);
+			// update readable progress text only
+			const holdTextEl = document.getElementById('hold-text');
+			if (holdTextEl) {
+				if (width === 0) holdTextEl.textContent = 'Hold to Confirm';
+				else if (width >= 100) holdTextEl.textContent = 'Confirming...';
+				else holdTextEl.textContent = `Hold ${Math.round(width)}%`;
+			}
+		}
+
+		// ==================== PURCHASE COMPLETION ====================
+		function completePurchase(item) {
+			vbucks -= item.price;
+			vbucksDisplay.textContent = vbucks;
+
+			const mode = isDarkMode ? '⚡ INSTANT' : '✓ VERIFIED';
+			const message = `${mode} PURCHASE: ${item.name} (${item.price} V-Bucks)`;
+			showNotification(message, isDarkMode ? 'info' : 'success');
+		}
+
+		// ==================== NOTIFICATIONS ====================
+		function showNotification(message, type) {
+			const container = document.getElementById('notification-container');
+			const notification = document.createElement('div');
+			notification.className = `notification ${type}`;
+			notification.innerHTML = message;
+
+			container.appendChild(notification);
+
+			setTimeout(() => {
+				notification.style.animation = 'slideInRight 0.3s ease reverse';
+				setTimeout(() => notification.remove(), 300);
+			}, 3000);
+		}
+
+		// Initialize on load
+		init();
+	</script>
+</body>
+</html>
