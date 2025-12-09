@@ -2,6 +2,12 @@
 
 Interactive Fortnite-inspired shop prototype that contrasts dark pattern purchasing flows with an ethical, user-protective experience. The project was built for our CS412 Performance Innovative Task to demonstrate how UI decisions influence player spending behavior.
 
+# Members:
+1. Gica IV, Leandro O.
+2. Bajalan, Zioney Jayce
+3. Magarin, Harvey Francis
+4. Yarra, Erwin Dane
+
 ## 🌀 Experience Overview
 - **Dark Pattern Mode** – Instant-purchase flow that skips confirmation, flashes congratulatory messaging, and encourages impulse buys.
 - **Ethical Mode** – Adds friction via a confirmation modal, hold-to-confirm mechanic, and clear balance impact before completing a purchase.
