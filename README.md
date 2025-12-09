@@ -19,17 +19,13 @@ Interactive Fortnite-inspired shop prototype that contrasts dark pattern purchas
 ```
 CS412_Dark_System_Final_Req/
 ├─ fortnite_poc_unfinished.html   # Original single-file proof of concept (kept untouched)
-├─ fortnite_poc.html              # Clean entry point wired to external CSS/JS
-├─ css/
-│  └─ fortnite.css                # All custom styling
-├─ js/
-│  └─ fortnite.js                 # Shop data + interaction logic
+├─ index.html                     # Final HTML of fortnite_poc
 └─ src/images/                    # Item renders + V-Bucks icon
 ```
 
 ## 🚀 Running the Demo Locally
 1. Clone or download this folder.
-2. Open `fortnite_poc.html` directly in your browser (no build tools required).
+2. Open `index.html` directly in your browser (no build tools required).
 3. Toggle between **Dark Pattern** and **Ethical** using the switch in the top bar, then click any price badge to experience the two flows.
 
 ## 🌐 Accessible via to GitHub Pages
