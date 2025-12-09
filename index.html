@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortnite Shop - Dark Pattern vs Ethical Design</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/fortnite.css">
+</head>
+<body>
+    <div class="top-nav">
+        <div class="nav-inner">
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <div class="logo" style="font-size:1.25rem;">FORTNITE</div>
+                <div class="nav-tabs" aria-hidden="true">
+                    <div class="nav-tab">PLAY</div>
+                    <div class="nav-tab">BATTLE PASS</div>
+                    <div class="nav-tab">CHALLENGES</div>
+                    <div class="nav-tab">COMPETE</div>
+                    <div class="nav-tab">LOCKER</div>
+                    <div class="nav-tab active">ITEM SHOP</div>
+                    <div class="nav-tab">CAREER</div>
+                    <div class="nav-tab">STORE</div>
+                </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <div class="mode-toggle-container" style="margin-right:8px;">
+                    <span class="mode-label dark">Dark Pattern</span>
+                    <div class="toggle-switch" id="mode-toggle">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <span class="mode-label ethical">Ethical</span>
+                </div>
+
+                <div class="v-bucks-container" title="Current V-Bucks">
+                    <img class="v-bucks-icon" src="src/images/Icon_VBucks.png" alt="V-Bucks icon">
+                    <span class="v-bucks-amount" id="vbucks-amount">5000</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mode-banner dark" id="mode-banner">
+        INSTANT PURCHASE MODE — One-click buying enabled
+    </div>
+
+    <div class="main-container">
+        <div class="section-header">
+            <div class="section-title">FEATURED ITEMS</div>
+            <div class="section-timer" id="featured-timer">3:36:29</div>
+        </div>
+        <div class="shop-grid" id="daily-shop"></div>
+
+        <div style="margin-top:2.25rem;" class="section-header">
+            <div class="section-title">DAILY ITEMS</div>
+            <div class="section-timer" id="daily-timer">3:36:29</div>
+        </div>
+        <div class="shop-grid" id="limited-shop"></div>
+    </div>
+
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Confirm Purchase</div>
+            </div>
+
+            <div class="modal-item-display">
+                <div class="modal-item-image">
+                    <img id="modal-item-image" src="" alt="Item">
+                </div>
+                <div class="modal-item-info">
+                    <div class="modal-item-name" id="modal-item-name">Item</div>
+                    <div class="modal-item-rarity" id="modal-item-rarity">Legendary</div>
+                </div>
+            </div>
+
+            <div class="modal-price-section">
+                <div class="price-row">
+                    <span>Price:</span>
+                    <span id="modal-item-price" style="color: #FFD700;">0</span>
+                </div>
+                <div class="price-row">
+                    <span>Your Balance:</span>
+                    <span id="modal-current-balance" style="color: #00E676;">5000</span>
+                </div>
+                <div class="price-row">
+                    <span>After Purchase:</span>
+                    <span id="modal-balance-after" style="color: #00E676;">5000</span>
+                </div>
+            </div>
+
+            <button class="hold-button" id="hold-confirm-btn">
+                <span>
+                    <span id="hold-text">Hold to Confirm</span>
+                    <span id="hold-progress-text" style="display: none;">■■■■■</span>
+                </span>
+            </button>
+
+            <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="dark-modal-overlay">
+        <div class="modal-content dark-congrats">
+            <div class="modal-header">
+                <div class="modal-title">Congratulations!</div>
+                <p class="modal-subtitle" id="dark-modal-subtitle">Instant purchase completed</p>
+            </div>
+
+            <div class="modal-item-display">
+                <div class="modal-item-image">
+                    <img id="dark-modal-item-image" src="" alt="Purchased item">
+                </div>
+                <div class="modal-item-info">
+                    <div class="modal-item-name" id="dark-modal-item-name">Item</div>
+                    <div class="modal-item-rarity" id="dark-modal-item-rarity">Legendary</div>
+                </div>
+            </div>
+
+            <div class="modal-message" id="dark-modal-message">
+                You just grabbed <span id="dark-modal-item-label">Item</span> for <span id="dark-modal-price">0 V-Bucks</span>. Enjoy your loot!
+            </div>
+
+            <button class="congrats-btn" id="dark-close-btn">Keep Shopping</button>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <script src="js/fortnite.js" defer></script>
+</body>
+</html>
