@@ -29,4 +29,4 @@ CS412_Dark_System_Final_Req/
 3. Toggle between **Dark Pattern** and **Ethical** using the switch in the top bar, then click any price badge to experience the two flows.
 
 ## 🌐 Accessible via to GitHub Pages
-Clink the [link](https://ustp-4th-year.github.io/CS412_Dark_System_Final_Req/fortnite_poc.html) to access the demo.
+Clink the [link]([https://ustp-4th-year.github.io/CS412_Dark_System_Final_Req/fortnite_poc.html](https://leandroiv.github.io/CS412_Dark_System_Final_Req/)) to access the demo.
